@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- HARDCODED_ID_IN_FLOW -->
+    <variables>
+        <name>AccountId</name>
+        <value>001XXXXXXXXXXXXAAA</value> <!-- Hardcoded ID -->
+    </variables>
+
+    <!-- UNUSED_FLOW_VARIABLE -->
+    <variables>
+        <name>UnusedVar</name>
+        <dataType>String</dataType>
+    </variables>
+
+    <!-- FLOW_MISSING_DESCRIPTION -->
+    <description></description> <!-- Empty description -->
+
+    <!-- MISSING_FAULT_PATH -->
+    <recordCreates>
+        <name>Create_Contact</name>
+        <object>Contact</object>
+        <fields>
+            <field>LastName</field>
+            <value>Test</value>
+        </fields>
+        <!-- Missing faultConnector on purpose -->
+    </recordCreates>
+
+    <!-- GET_RECORDS_WITHOUT_LIMIT -->
+    <recordLookups>
+        <name>GetAllAccounts</name>
+        <object>Account</object>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <!-- No limit -->
+    </recordLookups>
+
+    <!-- EXCESSIVE_DML_FLOW and LOOP_WITHOUT_ASSIGNMENT -->
+    <loops>
+        <name>LoopContacts1</name>
+        <loopRecords>Contacts</loopRecords>
+        <loopBody>
+            <recordCreates>
+                <name>CreateTask1</name>
+                <object>Task</object>
+            </recordCreates>
+            <recordCreates>
+                <name>CreateTask2</name>
+                <object>Task</object>
+            </recordCreates>
+            <!-- No assignment inside loop -->
+        </loopBody>
+    </loops>
+
+    <!-- NESTED_LOOPS_IN_FLOW -->
+    <loops>
+        <name>LoopAccounts</name>
+        <loopRecords>Accounts</loopRecords>
+        <loopBody>
+            <loops>
+                <name>NestedLoopContacts</name>
+                <loopRecords>Contacts</loopRecords>
+                <loopBody>
+                    <recordCreates>
+                        <name>CreateNestedTask</name>
+                        <object>Task</object>
+                    </recordCreates>
+                </loopBody>
+            </loops>
+        </loopBody>
+    </loops>
+
+</Flow>
