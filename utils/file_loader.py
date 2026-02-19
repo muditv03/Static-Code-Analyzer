@@ -1,3 +1,8 @@
 def load_file(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+    with open(path, "rb") as f:
+        raw = f.read()
+
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw.decode("latin-1", errors="ignore")
