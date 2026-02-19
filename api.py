@@ -51,7 +51,7 @@ async def analyze_folder(file: UploadFile = File(...)):
         total_issues = 0
         major_count = 0
         minor_count = 0
-
+        critical_count = 0
         for root, dirs, files in os.walk(extract_path):
 
             dirs[:] = [d for d in dirs if not d.startswith("__MACOSX")]
@@ -83,6 +83,8 @@ async def analyze_folder(file: UploadFile = File(...)):
                                 major_count += 1
                             elif v.get("severity") == "MINOR":
                                 minor_count += 1
+                            elif v.get("severity") == "CRITICAL":
+                                critical_count += 1
 
 
 
@@ -99,6 +101,7 @@ async def analyze_folder(file: UploadFile = File(...)):
                             }]
                         })
                         total_issues += 1
+                        critical_count += 1
 
 
     finally:
@@ -115,7 +118,8 @@ async def analyze_folder(file: UploadFile = File(...)):
         "total_files": len(file_results),
         "total_issues": total_issues,
         "major": major_count,
-        "minor": minor_count
+        "minor": minor_count,
+        "critical": critical_count
     },
     "files": file_results
 }
