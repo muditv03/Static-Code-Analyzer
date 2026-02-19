@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import zipfile
 import shutil
@@ -12,6 +13,16 @@ EXTRACT_DIR = "extracted"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(EXTRACT_DIR, exist_ok=True)
 
+
+# Allow CORS from the frontend at nucleus.mind-mesh.com
+origins = ["https://nucleus.mind-mesh.com","https://test.mind-mesh.com","http://localhost:3000"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/analyze-folder")
 async def analyze_folder(file: UploadFile = File(...)):
