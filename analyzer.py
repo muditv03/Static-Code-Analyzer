@@ -14,6 +14,22 @@ SUPPORTED_EXTENSIONS = (
 def is_supported_file(filename):
     return filename.endswith(SUPPORTED_EXTENSIONS)
 
+def get_file_type(filename):
+    if filename.endswith(".cls") or filename.endswith(".trigger"):
+        return "APEX"
+    elif filename.endswith(".flow-meta.xml"):
+        return "FLOW"
+    elif filename.endswith(".js"):
+        return "LWC_JS"
+    elif filename.endswith(".html"):
+        return "LWC_HTML"
+    elif filename.endswith(".css"):
+        return "LWC_CSS"
+    elif filename.endswith(".xml"):
+        return "XML"
+    else:
+        return "OTHER"
+
 def analyze_project(folder_path):
     results = []
 
@@ -31,6 +47,7 @@ def analyze_project(folder_path):
 
             results.append({
                 "file_name": filename,
+                "file_type": get_file_type(filename), 
                 "total_issues": len(violations),
                 "violations": violations
             })
