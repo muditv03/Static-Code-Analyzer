@@ -1,29 +1,38 @@
-import sys
+import os
 from engine.runner import run_analysis
 
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: apex-analyzer analyze <file>")
-        sys.exit(1)
+SUPPORTED_EXTENSIONS = (
+    ".cls",
+    ".trigger",
+    ".flow-meta.xml",
+    ".js",
+    ".html",
+    ".css",
+    ".xml"
+)
 
-    command = sys.argv[1]
-    file_path = sys.argv[2]
+def is_supported_file(filename):
+    return filename.endswith(SUPPORTED_EXTENSIONS)
 
-    if command != "analyze":
-        print("Unknown command")
-        sys.exit(1)
+def analyze_project(folder_path):
+    results = []
 
-    violations = run_analysis(file_path)
+    for root, dirs, files in os.walk(folder_path):
+        for filename in files:
 
-    if violations:
-        print(f"\n❌ FAILED ({len(violations)} issues)\n")
-        for v in violations:
-            print(f"[{v['rule']}]")
-            print(f"Line {v['line']}: {v['message']}\n")
-        sys.exit(1)
-    else:
-        print("\n✅ PASSED (0 issues)\n")
-        sys.exit(0)
+            if filename.startswith(".") or filename.startswith("._"):
+                continue
 
-if __name__ == "__main__":
-    main()
+            if not is_supported_file(filename):
+                continue
+
+            file_path = os.path.join(root, filename)
+            violations = run_analysis(file_path)
+
+            results.append({
+                "file_name": filename,
+                "total_issues": len(violations),
+                "violations": violations
+            })
+
+    return results
